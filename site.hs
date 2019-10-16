@@ -25,18 +25,18 @@ main = hakyll $ do
     tags <- buildTags "posts/*" (fromCapture "tags/*.html")
 
     tagsRules tags $ \tag pattern -> do
-            let title = "Posts tagged \"" ++ tag ++ "\""
-            route idRoute
-            compile $ do
-                posts <- recentFirst =<< loadAll pattern
-                let ctx = constField "title" title
-                          `mappend` listField "posts" postCtx (return posts)
-                          `mappend` defaultContext
+        let title = "Posts tagged \"" ++ tag ++ "\""
+        route idRoute
+        compile $ do
+            posts <- recentFirst =<< loadAll pattern
+            let ctx = constField "title" title
+                      `mappend` listField "posts" postCtx (return posts)
+                      `mappend` defaultContext
 
-                makeItem ""
-                    >>= loadAndApplyTemplate "templates/tag.html" ctx
-                    >>= loadAndApplyTemplate "templates/default.html" ctx
-                    >>= relativizeUrls
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/tag.html" ctx
+                >>= loadAndApplyTemplate "templates/default.html" ctx
+                >>= relativizeUrls
 
     match "posts/*" $ do
         route $ setExtension "html"
@@ -57,6 +57,28 @@ main = hakyll $ do
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+                >>= relativizeUrls
+
+    match "recipes/*" $ do
+        route $ setExtension "html"
+        compile $ pandocCompiler
+            >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/recipe.html"    (postCtxWithTags tags)
+            >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
+            >>= relativizeUrls
+
+    create ["recipes.html"] $ do
+        route idRoute
+        compile $ do
+            recipes <- recentFirst =<< loadAll "recipes/*"
+            let archiveCtx =
+                    listField "recipes" postCtx (return recipes) <>
+                    constField "title" "Recipes"            <>
+                    defaultContext
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/cookbook.html" archiveCtx
                 >>= loadAndApplyTemplate "templates/default.html" archiveCtx
                 >>= relativizeUrls
 
