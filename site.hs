@@ -1,9 +1,8 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import Control.Applicative
-import Data.Semigroup
+import           Control.Applicative
+import           Data.Semigroup
 import           Hakyll
-
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
@@ -64,22 +63,22 @@ main = hakyll $ do
         route $ setExtension "html"
         compile $ pandocCompiler
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/recipe.html"    (postCtxWithTags tags)
-            >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
+            >>= loadAndApplyTemplate "templates/recipe.html"    (recipeCtxWithTags tags)
+            >>= loadAndApplyTemplate "templates/default.html" (recipeCtxWithTags tags)
             >>= relativizeUrls
 
     create ["recipes.html"] $ do
         route idRoute
         compile $ do
             recipes <- recentFirst =<< loadAll "recipes/*"
-            let archiveCtx =
-                    listField "recipes" postCtx (return recipes) <>
+            let recipeCtx =
+                    listField "recipes" defaultContext (return recipes) <>
                     constField "title" "Recipes"            <>
                     defaultContext
 
             makeItem ""
-                >>= loadAndApplyTemplate "templates/cookbook.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+                >>= loadAndApplyTemplate "templates/cookbook.html" recipeCtx
+                >>= loadAndApplyTemplate "templates/default.html" recipeCtx
                 >>= relativizeUrls
 
     match "index.html" $ do
@@ -110,3 +109,6 @@ postCtx =
 
 postCtxWithTags :: Tags -> Context String
 postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
+
+recipeCtxWithTags :: Tags -> Context String
+recipeCtxWithTags tags = tagsField "tags" tags `mappend` defaultContext
