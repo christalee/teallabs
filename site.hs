@@ -1,8 +1,20 @@
+-- # TODO
+-- * consider linking post author names to profile pages, since the author tags page is right below
+-- * fix site.hs to not require dates on recipes?
+-- * use tags as headings on recipes.html
+-- * create an attractive template for recipes, plus a button to switch from side-by-side vs. vertical format
+-- * add a bottom margin? styles are specified for a footer but does it exist?
+-- * create a default tag for recipes and posts
+
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 import           Control.Applicative
+import           Data.Aeson
 import           Data.Semigroup
 import           Hakyll
+
+import qualified Data.HashMap.Strict as HMS
+import qualified Data.Text           as T
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
@@ -21,7 +33,7 @@ main = hakyll $ do
             >>= relativizeUrls
 
     --build up tags
-    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+    tags <- buildTags ("posts/*" .||. "recipes/*") (fromCapture "tags/*.html")
 
     tagsRules tags $ \tag pattern -> do
         let title = "Posts tagged \"" ++ tag ++ "\""
@@ -64,7 +76,7 @@ main = hakyll $ do
         compile $ pandocCompiler
             >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/recipe.html"    (recipeCtxWithTags tags)
-            >>= loadAndApplyTemplate "templates/default.html" (recipeCtxWithTags tags)
+            >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
             >>= relativizeUrls
 
     create ["recipes.html"] $ do
@@ -72,7 +84,7 @@ main = hakyll $ do
         compile $ do
             recipes <- recentFirst =<< loadAll "recipes/*"
             let recipeCtx =
-                    listField "recipes" defaultContext (return recipes) <>
+                    listField "recipes" postCtx (return recipes) <>
                     constField "title" "Recipes"            <>
                     defaultContext
 
@@ -110,5 +122,16 @@ postCtx =
 postCtxWithTags :: Tags -> Context String
 postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
 
-recipeCtxWithTags :: Tags -> Context String
-recipeCtxWithTags tags = tagsField "tags" tags `mappend` defaultContext
+recipeCtxWithTags tags = listFieldWith "details" pairs (\recipe -> do
+  details <- HMS.lookup (T.pack "details") <$> getMetadata (itemIdentifier recipe)
+  case details of
+    Just (Object o) -> return [newID recipe (T.unpack k, toString v) | (k, v) <- HMS.toList o]
+    _               -> return [])
+  `mappend` postCtxWithTags tags
+  where pairs = field "key" (\item -> return (fst (itemBody item))) <>
+              field "value" (\item -> return (snd (itemBody item)))
+
+toString v = case v of
+  String s -> T.unpack s
+  _        -> ""
+newID item body = Item (fromFilePath (toFilePath (itemIdentifier item) ++ "#details")) body

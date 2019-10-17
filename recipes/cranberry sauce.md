@@ -1,9 +1,9 @@
 ---
 title: Cranberry Sauce
 tags: Thanksgiving, recipe
----
+date: 0001-01-01
 source: Beki Bergey
-
+---
 A simple but delicious cranberry sauce recipe.
 
 * 1 bag cranberries

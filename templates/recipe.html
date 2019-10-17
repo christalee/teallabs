@@ -1,7 +1,22 @@
+<link rel="stylesheet" type="text/css" href="/css/recipe-markdown.css" />
+
 <div class="info">
     $if(tags)$
     Tags: $tags$
     $endif$
 </div>
+<div class="info">
+    $if(source)$
+    Source: $source$
+    $endif$
+</div>
+
+<ul>
+    $for(details)$
+    <li>
+        <h3>$key$:</h3> $value$
+    </li>
+    $endfor$
+</ul>
 
 $body$

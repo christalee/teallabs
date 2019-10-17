@@ -1,9 +1,9 @@
 ---
 title: Phil's eggnog
 tags: Thanksgiving, recipe
+date: 0001-01-01
+source: Prof. Serge Lang, Princeton University
 ---
-source: Prof. Serge Lang, Princeton
-
 This epic performance was reconstructed by Phil Bergey at Thanksgiving 2018.
 
 * 12 eggs, separated
