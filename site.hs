@@ -5,6 +5,8 @@
 -- * create an attractive template for recipes, plus a button to switch from side-by-side vs. vertical format
 -- * add a bottom margin? styles are specified for a footer but does it exist?
 -- * create a default tag for recipes and posts
+-- * simplify details code omg; implement a rational sort ordering for fields
+-- * reimplement recipe step numbering, notes styling
 
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
@@ -12,6 +14,7 @@ import           Control.Applicative
 import           Data.Aeson
 import           Data.Semigroup
 import           Hakyll
+import           Text.Pandoc
 
 import qualified Data.HashMap.Strict as HMS
 import qualified Data.Text           as T
@@ -40,9 +43,10 @@ main = hakyll $ do
         route idRoute
         compile $ do
             posts <- recentFirst =<< loadAll pattern
-            let ctx = constField "title" title
-                      `mappend` listField "posts" postCtx (return posts)
-                      `mappend` defaultContext
+            let ctx =
+                    constField "title" title                  <>
+                    listField "posts" postCtx (return posts)  <>
+                    defaultContext
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag.html" ctx
@@ -75,7 +79,7 @@ main = hakyll $ do
         route $ setExtension "html"
         compile $ pandocCompiler
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/recipe.html"    (recipeCtxWithTags tags)
+            >>= loadAndApplyTemplate "templates/recipe.html"    (postCtxWithTags tags)
             >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
             >>= relativizeUrls
 
@@ -84,8 +88,8 @@ main = hakyll $ do
         compile $ do
             recipes <- recentFirst =<< loadAll "recipes/*"
             let recipeCtx =
-                    listField "recipes" postCtx (return recipes) <>
-                    constField "title" "Recipes"            <>
+                    listField "recipes" postCtx (return recipes)  <>
+                    constField "title" "Recipes"                  <>
                     defaultContext
 
             makeItem ""
@@ -120,18 +124,4 @@ postCtx =
     defaultContext
 
 postCtxWithTags :: Tags -> Context String
-postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
-
-recipeCtxWithTags tags = listFieldWith "details" pairs (\recipe -> do
-  details <- HMS.lookup (T.pack "details") <$> getMetadata (itemIdentifier recipe)
-  case details of
-    Just (Object o) -> return [newID recipe (T.unpack k, toString v) | (k, v) <- HMS.toList o]
-    _               -> return [])
-  `mappend` postCtxWithTags tags
-  where pairs = field "key" (\item -> return (fst (itemBody item))) <>
-              field "value" (\item -> return (snd (itemBody item)))
-
-toString v = case v of
-  String s -> T.unpack s
-  _        -> ""
-newID item body = Item (fromFilePath (toFilePath (itemIdentifier item) ++ "#details")) body
+postCtxWithTags tags = tagsField "tags" tags <> postCtx

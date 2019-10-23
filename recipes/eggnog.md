@@ -3,8 +3,8 @@ title: Phil's eggnog
 tags: Thanksgiving, recipe
 date: 0001-01-01
 source: Prof. Serge Lang, Princeton University
+description: This epic performance was reconstructed by Phil Bergey at Thanksgiving 2018.
 ---
-This epic performance was reconstructed by Phil Bergey at Thanksgiving 2018.
 
 * 12 eggs, separated
 - Separate the eggs; put the yolks into a serving bowl and the whites into a mixer bowl.

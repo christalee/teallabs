@@ -3,8 +3,8 @@ title: Cranberry Sauce
 tags: Thanksgiving, recipe
 date: 0001-01-01
 source: Beki Bergey
+description: A simple but delicious cranberry sauce recipe.
 ---
-A simple but delicious cranberry sauce recipe.
 
 * 1 bag cranberries
 * 1 orange, peeled

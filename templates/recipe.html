@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="/css/recipe-markdown.css" />
+<link rel="stylesheet" type="text/css" href="/css/recipe.css" />
 
 <div class="info">
     $if(tags)$
@@ -11,12 +11,6 @@
     $endif$
 </div>
 
-<ul>
-    $for(details)$
-    <li>
-        <h3>$key$:</h3> $value$
-    </li>
-    $endfor$
-</ul>
+<div class="description">$description$</div>
 
 $body$
