@@ -5,7 +5,6 @@
 -- * create an attractive template for recipes, plus a button to switch from side-by-side vs. vertical format
 -- * add a bottom margin? styles are specified for a footer but does it exist?
 -- * create a default tag for recipes and posts
--- * simplify details code omg; implement a rational sort ordering for fields
 -- * reimplement recipe step numbering, notes styling
 
 --------------------------------------------------------------------------------

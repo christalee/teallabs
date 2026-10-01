@@ -7,16 +7,16 @@ description: This epic performance was reconstructed by Phil Bergey at Thanksgiv
 ---
 
 * 12 eggs, separated
-- Separate the eggs; put the yolks into a serving bowl and the whites into a mixer bowl.
+#. Separate the eggs; put the yolks into a serving bowl and the whites into a mixer bowl.
 
 * 1 lb. sugar
 * 2 qt. milk
 * 1 qt. heavy cream
 * 700 mL (1 bottle) Remy Martin VSOP cognac
-- Mix the sugar, milk, and cream into the egg yolks, then add the cognac.
+#. Mix the sugar, milk, and cream into the egg yolks, then add the cognac.
 
 * 12 egg whites
-- Whip the egg whites and fold gently into the eggnog.
+#. Whip the egg whites and fold gently into the eggnog.
 
 * nutmeg
-- Grate nutmeg over top, stir gently, and serve.
+#. Grate nutmeg over top, stir gently, and serve.
